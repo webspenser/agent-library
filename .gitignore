@@ -17,3 +17,6 @@ AGENTS.md
 # Local secrets and credentials
 **/credentials.json
 **/*.key
+
+# SDD execution workspace (scratch)
+.superpowers/
