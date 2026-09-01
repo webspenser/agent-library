@@ -3,7 +3,7 @@
 **Date:** 2026-09-01
 **Status:** Approved, pending implementation plan
 **Implements:** [Portable Agent Specification Format](./2026-09-01-portable-agent-spec-design.md)
-**Location:** `agents/sales-partner/`
+**Location:** `agent-library/sales-partner/`
 
 ## Purpose
 

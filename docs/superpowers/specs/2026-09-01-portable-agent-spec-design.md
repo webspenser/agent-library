@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-01
 **Status:** Approved (scaffold); agent-specific content pending
-**Location:** `/Users/hochoy/Work/Webspenser/agents/`
+**Location:** `/Users/hochoy/Work/Webspenser/agent-library/`
 
 ## Purpose
 
