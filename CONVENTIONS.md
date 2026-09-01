@@ -1,0 +1,182 @@
+# Agent Specification Conventions
+
+An agent specification is a directory of provider-neutral markdown with a
+single source of truth: one `AGENT.md`, one set of skills, one set of
+sub-agent contracts. Provider differences — how Claude Code, Gemini CLI,
+Codex, Cursor, or any other host discovers and wires up the agent — live
+only in `adapters/`, which carry no behavior of their own. This document
+is the standard `tests/validate-agent.sh` enforces; if this file and the
+script ever disagree, the script is the ground truth and this file is a
+bug.
+
+## Directory layout
+
+```
+agents/
+  README.md                 # what this folder is, how to use a spec
+  CONVENTIONS.md            # the portable-agent standard, one page
+  _template/                # empty skeleton, copy to start an agent
+  <agent-name>/
+    AGENT.md                # single source of truth
+    install.sh              # links adapters into host-expected locations
+    adapters/
+      CLAUDE.md             # pointer file, no behavior
+      GEMINI.md             # pointer file, no behavior
+      AGENTS.md             # pointer file, no behavior (Codex, Cursor, Amp, Copilot)
+    skills/
+      <skill-name>/
+        SKILL.md            # frontmatter + procedure
+        references/         # optional deep-dive files, loaded on demand
+    subagents/
+      <role-name>.md        # role contract
+    templates/              # blank fill-in artifacts the agent PRODUCES
+    samples/                # filled-in gold-standard examples
+    context/                # inputs the agent CONSUMES
+    evals/
+      cases.md              # given-X-expect-Y checks
+```
+
+`adapters/`, `skills/`, `subagents/`, `templates/`, `samples/`,
+`context/`, and `evals/` are all required directories inside every
+`<agent-name>/`, even if some start empty — the validator fails an agent
+missing any of them. `AGENT.md`, `install.sh`, and `evals/cases.md` are
+required files; `install.sh` must additionally be executable
+(`chmod +x`). `adapters/CLAUDE.md`, `adapters/GEMINI.md`, and
+`adapters/AGENTS.md` are all required, not optional per-host extras.
+
+## AGENT.md
+
+Ten required headings, in this exact order. The validator collects every
+`##`/`###` heading in the file, keeps only the ones that match this list,
+and fails unless what's left is exactly these ten, once each, in this
+order — other `##`/`###` headings may appear between or around them (for
+subsections), but none of the ten may be missing, duplicated, or
+reordered.
+
+1. `Identity` — who the agent is, two or three sentences
+2. `Mission` — the outcome it exists to produce
+3. `Inputs` — what it needs before it can start
+4. `Outputs` — what it produces, with exact artifact shapes
+5. `Operating rules` — how it works, numbered
+6. `Workflow` — ordered steps, each tagged with its required capability tier
+7. `Sub-agents` — table: role, when to use, contract path
+8. `Skills` — table: skill, trigger condition
+9. `Guardrails / never do` — hard prohibitions
+10. `Escalate to human when` — explicit stop-and-ask conditions
+
+## Skills
+
+Each skill lives at `skills/<skill-name>/SKILL.md` with YAML frontmatter
+containing exactly two keys — nothing more, nothing less:
+
+```
+---
+name: kebab-case-name
+description: Use when <trigger condition> — <what it does>
+---
+```
+
+The validator requires: an opening `---` on line 1, a closing `---`
+later in the file, a `name` matching `^[a-z0-9]+(-[a-z0-9]+)*$`, a
+`description` that begins with the literal words `Use when`, and no
+other keys in the frontmatter block — any stray key (`version`, `tags`,
+anything) fails validation.
+
+The body is a numbered procedure, one worked example, and known failure
+modes. Deep material goes in `references/` and is read on demand,
+keeping the always-loaded surface small.
+
+## Sub-agent contracts
+
+Each contract lives at `subagents/<role-name>.md` with eight required
+headings, in this exact order (same present-and-in-order rule as
+`AGENT.md` above):
+
+1. `Purpose`
+2. `Trigger`
+3. `Inputs` — exact
+4. `Outputs` — exact shape
+5. `Tools allowed`
+6. `Stop conditions`
+7. `Handoff` — which role or step consumes the output
+8. `Inline fallback` — how to run this contract as a sequential phase
+   when the host has no sub-agent dispatch
+
+Three rules apply on top of the heading shape:
+
+- **No contract may name another contract.** Handoffs happen through
+  state transitions only — a contract hands off by producing an output
+  artifact, not by invoking a named peer. This is what lets the whole
+  pipeline collapse into sequential inline phases on a host without
+  dispatch.
+- **Every `Stop conditions` entry is a countable resource** — a spend
+  cap, a quota, an item count, a touch limit. Never "when done": a
+  contract that stops on completion has no bound on a model that never
+  believes it's done.
+- **`Tools allowed` is the enforcement mechanism for autonomy.** A
+  contract that must not send email, post publicly, or spend money does
+  not list that tool — the omission is the guardrail, not a sentence
+  telling it not to.
+
+## templates/ vs samples/ vs context/
+
+- **`templates/`** — blank artifacts the agent produces: the empty
+  shape it fills in.
+- **`samples/`** — filled, gold-standard examples the agent imitates
+  for voice and structure.
+- **`context/`** — material the agent consumes as input; never a
+  deliverable.
+
+They stay separate on purpose. Merging templates and samples causes
+placeholder text to leak into output, because the model can no longer
+tell "the blank to fill" from "an example already filled." Merging
+context in with either causes reference material to get emitted as if
+it were a deliverable.
+
+## Adapters
+
+`adapters/CLAUDE.md`, `adapters/GEMINI.md`, and `adapters/AGENTS.md` are
+pointer files only — 25 lines maximum, and each must reference
+`AGENT.md` by name so the host lands on the real specification. Any rule
+placed in an adapter is a defect: it creates a second source of truth
+for that provider, and the two will drift.
+
+```markdown
+<!-- adapters/GEMINI.md -->
+# <Agent Name>
+
+Read `AGENT.md` in this directory. It is the full specification —
+identity, rules, workflow, guardrails. Follow it exactly.
+
+Skills: read `skills/<name>/SKILL.md` when its trigger matches.
+Sub-agents: `subagents/*.md` are role contracts. This host has no
+dispatch — run each contract inline as a sequential phase.
+```
+
+## Capability tiers
+
+Agents declare the capability each workflow step needs, so weaker hosts
+run a reduced agent rather than failing:
+
+| Tier | Host capability | Behavior |
+|---|---|---|
+| 1 — Full | Sub-agent dispatch + skill autoloading | Sub-agents run dispatched and isolated |
+| 2 — Reduced | No dispatch | Same role contracts run inline as sequential phases |
+| 3 — Minimum | Single context | `AGENT.md` alone, skills pasted in as needed |
+
+No step on any agent's critical path may require tier 1. Dispatch buys
+parallelism and context isolation, never correctness — a workflow that
+only works with dispatch is a workflow that only works on one host.
+
+## Validation
+
+```bash
+tests/validate-agent.sh <agent-dir>
+```
+
+Exits `0` and prints `OK: <agent-dir> conforms` when the directory
+matches every rule above; otherwise prints one `FAIL:` line per problem
+and exits non-zero. Run it before committing any change to an agent
+directory — a change that breaks heading order, frontmatter shape, or
+adapter size is a change that breaks portability, and this script is the
+only thing that catches it before a host does.
