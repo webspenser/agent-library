@@ -45,18 +45,23 @@ fi
 for a in CLAUDE GEMINI AGENTS; do
   f="$DIR/adapters/$a.md"
   [ -f "$f" ] || continue
-  lines=$(wc -l < "$f" | tr -d ' ')
+  # awk counts every line regardless of a missing trailing newline;
+  # `wc -l` undercounts by one in that case.
+  lines=$(awk 'END { print NR }' "$f")
   [ "$lines" -le "$ADAPTER_MAX_LINES" ] \
     || fail "adapters/$a.md has $lines lines (max $ADAPTER_MAX_LINES) — adapters carry no behavior"
   grep -qF 'AGENT.md' "$f" || fail "adapters/$a.md does not point at AGENT.md"
 done
 
-# Skills: frontmatter shape
+# Skills: frontmatter shape — opening and closing fence, only name/description keys
 while IFS= read -r f; do
   [ -n "$f" ] || continue
   head -1 "$f" | grep -qx -- '---' || { fail "$f: missing opening frontmatter ---"; continue; }
-  name=$(sed -n '2,10p' "$f" | grep -m1 '^name:' | sed 's/^name:[[:space:]]*//' || true)
-  desc=$(sed -n '2,10p' "$f" | grep -m1 '^description:' | sed 's/^description:[[:space:]]*//' || true)
+  close_line=$(awk 'NR > 1 && $0 == "---" { print NR; exit }' "$f")
+  [ -n "$close_line" ] || { fail "$f: missing closing frontmatter ---"; continue; }
+  fm=$(sed -n "2,$((close_line - 1))p" "$f")
+  name=$(echo "$fm" | grep -m1 '^name:' | sed 's/^name:[[:space:]]*//' || true)
+  desc=$(echo "$fm" | grep -m1 '^description:' | sed 's/^description:[[:space:]]*//' || true)
   [ -n "$name" ] || fail "$f: missing name in frontmatter"
   echo "$name" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$' || fail "$f: name '$name' is not kebab-case"
   [ -n "$desc" ] || fail "$f: missing description in frontmatter"
@@ -64,14 +69,17 @@ while IFS= read -r f; do
     "Use when"*) ;;
     *) fail "$f: description must begin with 'Use when'" ;;
   esac
+  extra=$(echo "$fm" | grep -vE '^(name|description):' | grep -vE '^[[:space:]]*$' || true)
+  [ -z "$extra" ] || fail "$f: frontmatter has keys other than name/description: $(echo "$extra" | head -1)"
 done < <(find "$DIR/skills" -name SKILL.md 2>/dev/null)
 
-# Sub-agent contracts: required headings
+# Sub-agent contracts: required headings present AND in order
 while IFS= read -r f; do
   [ -n "$f" ] || continue
-  for h in "${SUBAGENT_HEADINGS[@]}"; do
-    grep -qE "^#{2,3} +$h\$" "$f" || fail "$f: missing heading '$h'"
-  done
+  found=$(grep -E '^#{2,3} ' "$f" | sed -E 's/^#+ +//' || true)
+  expected=$(printf '%s\n' "${SUBAGENT_HEADINGS[@]}")
+  filtered=$(echo "$found" | grep -Fx -f <(printf '%s\n' "${SUBAGENT_HEADINGS[@]}") || true)
+  [ "$filtered" = "$expected" ] || fail "$f: headings missing or out of order"
 done < <(find "$DIR/subagents" -name '*.md' 2>/dev/null)
 
 if [ "$ERRORS" -eq 0 ]; then echo "OK: $DIR conforms"; exit 0; fi

@@ -60,4 +60,26 @@ make_valid_agent "$FIX/fat-adapter"
 } > "$FIX/fat-adapter/adapters/GEMINI.md"
 assert_fail tests/validate-agent.sh "$FIX/fat-adapter"
 
+# A sub-agent contract with all headings present but two swapped fails.
+make_valid_agent "$FIX/sub-shuffled"
+printf '%s\n' '## Trigger' '## Purpose' '## Inputs' '## Outputs' \
+  '## Tools allowed' '## Stop conditions' '## Handoff' '## Inline fallback' \
+  > "$FIX/sub-shuffled/subagents/role.md"
+assert_fail tests/validate-agent.sh "$FIX/sub-shuffled"
+
+# A skill with valid name/description plus an extra frontmatter key fails.
+make_valid_agent "$FIX/skill-extra-key"
+mkdir -p "$FIX/skill-extra-key/skills/thing"
+printf '%s\n' '---' 'name: thing' 'description: Use when doing a thing' \
+  'version: 1.0' '---' \
+  > "$FIX/skill-extra-key/skills/thing/SKILL.md"
+assert_fail tests/validate-agent.sh "$FIX/skill-extra-key"
+
+# A skill with an unterminated (no closing ---) frontmatter block fails.
+make_valid_agent "$FIX/skill-unterminated"
+mkdir -p "$FIX/skill-unterminated/skills/thing"
+printf '%s\n' '---' 'name: thing' 'description: Use when doing a thing' \
+  > "$FIX/skill-unterminated/skills/thing/SKILL.md"
+assert_fail tests/validate-agent.sh "$FIX/skill-unterminated"
+
 finish
