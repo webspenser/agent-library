@@ -1,0 +1,19 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Host adapter links created by install.sh at each agent's root.
+# The real adapter sources live in <agent>/adapters/ and stay tracked.
+CLAUDE.md
+GEMINI.md
+AGENTS.md
+!**/adapters/CLAUDE.md
+!**/adapters/GEMINI.md
+!**/adapters/AGENTS.md
+.claude/
+.gemini/
+
+# Local secrets and credentials
+**/credentials.json
+**/*.key
