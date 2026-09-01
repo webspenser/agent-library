@@ -6,15 +6,26 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-MODE=link
+COPY=0
+DRY=0
 for arg in "$@"; do
   case "$arg" in
-    --copy)    MODE=copy ;;
-    --dry-run) MODE=dry ;;
+    --copy)    COPY=1 ;;
+    --dry-run) DRY=1 ;;
     -h|--help) sed -n '2,6p' "$0"; exit 0 ;;
     *) echo "unknown option: $arg" >&2; exit 2 ;;
   esac
 done
+# Dry-run is sticky: if it appears anywhere in the arguments, nothing is
+# written regardless of what else was passed (e.g. flag order can't turn
+# `--dry-run --copy` into a real write).
+if [ "$DRY" -eq 1 ]; then
+  MODE=dry
+elif [ "$COPY" -eq 1 ]; then
+  MODE=copy
+else
+  MODE=link
+fi
 
 [ -d adapters ] || { echo "no adapters/ directory here" >&2; exit 1; }
 
