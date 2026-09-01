@@ -77,8 +77,14 @@ sub-agent dispatch, with identical behavior.
 
 ### Neutral contract
 
-Six operations: `create_lead`, `get_lead`, `update_stage`,
-`log_activity`, `query_by_stage`, `query_by_score`.
+Seven operations: `create_lead`, `get_lead`, `update_stage`,
+`update_lead`, `log_activity`, `query_by_stage`, `query_by_score`.
+`update_stage` writes only the `stage` field, validated against the
+twelve-value enum; `update_lead` writes every other lead-level field
+(`score`, `score breakdown`, `do-not-contact`, `next action`, `next
+action due`, and so on) and rejects any attempt to write `stage`
+through it. The split is what keeps `update_stage` the sole handoff
+mechanism between sub-agents.
 
 ### Airtable adapter — four tables
 

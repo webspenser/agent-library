@@ -786,13 +786,13 @@ git commit -m "feat(sales-partner): scaffold agent and write AGENT.md"
 
 **Interfaces:**
 - Consumes: nothing
-- Produces: the six operations and the four-table schema every sub-agent
+- Produces: the seven operations and the four-table schema every sub-agent
   contract in Task 8 refers to. Operation names and field names defined here
   are used verbatim in Tasks 8–12.
 
 - [ ] **Step 1: Write `sales-partner/context/crm-contract.md`**
 
-Provider-neutral. Six operations, each documented with its arguments,
+Provider-neutral. Seven operations, each documented with its arguments,
 return shape, and failure behavior:
 
 | Operation | Arguments | Returns | On failure |
@@ -800,6 +800,7 @@ return shape, and failure behavior:
 | `create_lead` | company, domain, location, industry, size, source, score, score_breakdown, source_url | lead_id | Duplicate domain returns the existing lead_id and writes nothing |
 | `get_lead` | lead_id | full lead record with linked Contacts, Research, Activities | Missing id is an error, not an empty record |
 | `update_stage` | lead_id, stage, reason | updated lead | Rejects any stage outside the enumerated list |
+| `update_lead` | lead_id, fields | updated lead | Rejects any attempt to write `stage` — that write belongs to `update_stage` alone |
 | `log_activity` | lead_id, contact_id, channel, direction, summary, draft_body, status, outcome | activity_id | Rejects `status: sent` unless the record was previously `approved` |
 | `query_by_stage` | stage, limit | list of leads | Empty list is a valid result |
 | `query_by_score` | min_score, stage, limit | list of leads ordered by score descending | Empty list is a valid result |
