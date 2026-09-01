@@ -49,9 +49,9 @@ live tool surface.
 - Sales-partner lead stages, exactly: `New`, `Scored`, `Researched`,
   `Approach Drafted`, `Contacted`, `Replied`, `Call Scheduled`,
   `Call Held`, `Following Up`, `Won`, `Lost`, `Disqualified`.
-- CRM contract operations, exactly nine: `create_lead`, `get_lead`,
+- CRM contract operations, exactly ten: `create_lead`, `get_lead`,
   `update_stage`, `update_lead`, `log_activity`, `log_research`,
-  `upsert_contact`, `query_by_stage`, `query_by_score`.
+  `upsert_contact`, `query_by_stage`, `query_by_score`, `query_activities`.
 - LinkedIn is draft-and-hand-to-human. No automated LinkedIn action, ever.
 - `samples/` in `_template/` ships empty but for a README. Generic samples
   teach generic voice.
@@ -787,13 +787,13 @@ git commit -m "feat(sales-partner): scaffold agent and write AGENT.md"
 
 **Interfaces:**
 - Consumes: nothing
-- Produces: the nine operations and the four-table schema every sub-agent
+- Produces: the ten operations and the four-table schema every sub-agent
   contract in Task 8 refers to. Operation names and field names defined here
   are used verbatim in Tasks 8–12.
 
 - [ ] **Step 1: Write `sales-partner/context/crm-contract.md`**
 
-Provider-neutral. Nine operations, each documented with its arguments,
+Provider-neutral. Ten operations, each documented with its arguments,
 return shape, and failure behavior:
 
 | Operation | Arguments | Returns | On failure |
