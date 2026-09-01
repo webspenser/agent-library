@@ -49,8 +49,9 @@ live tool surface.
 - Sales-partner lead stages, exactly: `New`, `Scored`, `Researched`,
   `Approach Drafted`, `Contacted`, `Replied`, `Call Scheduled`,
   `Call Held`, `Following Up`, `Won`, `Lost`, `Disqualified`.
-- CRM contract operations, exactly six: `create_lead`, `get_lead`,
-  `update_stage`, `log_activity`, `query_by_stage`, `query_by_score`.
+- CRM contract operations, exactly nine: `create_lead`, `get_lead`,
+  `update_stage`, `update_lead`, `log_activity`, `log_research`,
+  `upsert_contact`, `query_by_stage`, `query_by_score`.
 - LinkedIn is draft-and-hand-to-human. No automated LinkedIn action, ever.
 - `samples/` in `_template/` ships empty but for a README. Generic samples
   teach generic voice.
@@ -786,13 +787,13 @@ git commit -m "feat(sales-partner): scaffold agent and write AGENT.md"
 
 **Interfaces:**
 - Consumes: nothing
-- Produces: the seven operations and the four-table schema every sub-agent
+- Produces: the nine operations and the four-table schema every sub-agent
   contract in Task 8 refers to. Operation names and field names defined here
   are used verbatim in Tasks 8–12.
 
 - [ ] **Step 1: Write `sales-partner/context/crm-contract.md`**
 
-Provider-neutral. Seven operations, each documented with its arguments,
+Provider-neutral. Nine operations, each documented with its arguments,
 return shape, and failure behavior:
 
 | Operation | Arguments | Returns | On failure |
@@ -802,6 +803,8 @@ return shape, and failure behavior:
 | `update_stage` | lead_id, stage, reason | updated lead | Rejects any stage outside the enumerated list |
 | `update_lead` | lead_id, fields | updated lead | Rejects any attempt to write `stage` — that write belongs to `update_stage` alone |
 | `log_activity` | lead_id, contact_id, channel, direction, summary, draft_body, status, outcome | activity_id | Rejects `status: sent` unless the record was previously `approved` |
+| `log_research` | lead_id, type, summary, source_url, date, hook | research_id | Rejects a write with an empty source_url or an empty hook |
+| `upsert_contact` | lead_id, name, title, email, linkedin_url, role, verified | contact_id | Matches on email when present, otherwise on name plus title, and updates rather than duplicates; rejects a role outside decision-maker/influencer/gatekeeper |
 | `query_by_stage` | stage, limit | list of leads | Empty list is a valid result |
 | `query_by_score` | min_score, stage, limit | list of leads ordered by score descending | Empty list is a valid result |
 

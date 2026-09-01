@@ -77,14 +77,21 @@ sub-agent dispatch, with identical behavior.
 
 ### Neutral contract
 
-Seven operations: `create_lead`, `get_lead`, `update_stage`,
-`update_lead`, `log_activity`, `query_by_stage`, `query_by_score`.
+Nine operations: `create_lead`, `get_lead`, `update_stage`,
+`update_lead`, `log_activity`, `log_research`, `upsert_contact`,
+`query_by_stage`, `query_by_score`.
 `update_stage` writes only the `stage` field, validated against the
 twelve-value enum; `update_lead` writes every other lead-level field
 (`score`, `score breakdown`, `do-not-contact`, `next action`, `next
 action due`, and so on) and rejects any attempt to write `stage`
 through it. The split is what keeps `update_stage` the sole handoff
-mechanism between sub-agents.
+mechanism between sub-agents. `log_activity`, `log_research`, and
+`upsert_contact` are the child-record writes, one per linked table:
+`log_activity` creates an Activity, `log_research` creates a Research
+row and rejects an empty source URL or an empty hook, and
+`upsert_contact` creates or updates a Contact — matched on email, or on
+name plus title — so a second contact-discovery pass after a bounce
+never duplicates a person.
 
 ### Airtable adapter — four tables
 
