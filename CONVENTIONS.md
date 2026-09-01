@@ -12,7 +12,7 @@ bug.
 ## Directory layout
 
 ```
-agents/
+agent-library/
   README.md                 # what this folder is, how to use a spec
   CONVENTIONS.md            # the portable-agent standard, one page
   _template/                # empty skeleton, copy to start an agent
@@ -102,7 +102,11 @@ headings, in this exact order (same present-and-in-order rule as
 8. `Inline fallback` — how to run this contract as a sequential phase
    when the host has no sub-agent dispatch
 
-Three rules apply on top of the heading shape:
+Three rules apply on top of the heading shape. Unlike the heading
+presence and order above, `tests/validate-agent.sh` does not check any
+of these three — it only parses the eight headings, never the content
+underneath them — so these are conventions a human or reviewer enforces,
+not ones the script catches:
 
 - **No contract may name another contract.** Handoffs happen through
   state transitions only — a contract hands off by producing an output

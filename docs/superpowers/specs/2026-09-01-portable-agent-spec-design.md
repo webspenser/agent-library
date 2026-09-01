@@ -45,7 +45,7 @@ document (never runs natively anywhere).
 ## Directory Layout
 
 ```
-agents/
+agent-library/
   README.md                 # what this folder is, how to use a spec
   CONVENTIONS.md            # the portable-agent standard, one page
   _template/                # empty skeleton, copy to start an agent
