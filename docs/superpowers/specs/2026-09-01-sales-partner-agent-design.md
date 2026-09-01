@@ -129,6 +129,9 @@ every lead carries provenance.
   role tags, `stage = Researched`
 - **Tools** — web search, Apify site and social scrapers, CRM
 - **Stop** — two or more usable hooks found, or per-lead research budget spent
+- **Re-score** — before handoff, re-run `score-lead`. Research resolves the
+  two rubric criteria worth 45 points that prospecting can only guess at:
+  buying trigger present, and decision-maker reachable.
 - **Handoff** — Approacher
 - **Inline fallback** — runs as phase 2 in sequence
 
@@ -139,7 +142,8 @@ to `Disqualified` rather than passing it on.
 ### 3 · `approacher.md`
 
 - **Purpose** — choose the opening channel and draft the first touch
-- **Trigger** — `stage = Researched`
+- **Trigger** — `stage = Researched` and `score >= approach_threshold`,
+  using the score the Preparer revised after research
 - **Inputs** — lead, Contacts, Research hooks, `business-profile.md`,
   tone and sending identity from config
 - **Outputs** — channel recommendation with rationale, drafted message
