@@ -96,7 +96,9 @@ never duplicates a person.
 ### Airtable adapter — four tables
 
 - **Leads** — company, domain, location, industry, size, source, score,
-  score breakdown, stage, next action, next action due, do-not-contact
+  score breakdown, stage, stage changed at (set only by `update_stage`,
+  on every transition — never touched by `update_lead`), next action,
+  next action due, do-not-contact
 - **Contacts** — name, title, email, LinkedIn URL, role
   (decision-maker / influencer / gatekeeper), verified, notes
   (provenance annotations, e.g. an unverified pattern-guessed email);
