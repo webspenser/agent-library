@@ -98,7 +98,9 @@ never duplicates a person.
 - **Leads** — company, domain, location, industry, size, source, score,
   score breakdown, stage, next action, next action due, do-not-contact
 - **Contacts** — name, title, email, LinkedIn URL, role
-  (decision-maker / influencer / gatekeeper), verified; linked to Leads
+  (decision-maker / influencer / gatekeeper), verified, notes
+  (provenance annotations, e.g. an unverified pattern-guessed email);
+  linked to Leads
 - **Research** — type (news / funding / social / event / hire), summary,
   source URL, date, **hook**; linked to Leads
 - **Activities** — channel, direction, date, summary, draft body,
