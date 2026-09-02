@@ -102,11 +102,34 @@ headings, in this exact order (same present-and-in-order rule as
 8. `Inline fallback` — how to run this contract as a sequential phase
    when the host has no sub-agent dispatch
 
+Above those headings, every contract opens with YAML frontmatter
+carrying exactly two keys — the same two a skill carries, and required
+for the same practical reason: a host that registers sub-agents by
+directory (Claude Code reads them from `.claude/agents/`, which
+`install.sh` links to `subagents/`) will not register a definition
+without them. A contract with no frontmatter does not fail loudly — the
+host simply never registers it, tier-1 dispatch silently degrades to
+inline, and the tier-1 half of the portability claim goes untested.
+
+```
+---
+name: kebab-case-name
+description: One line saying when to dispatch this contract.
+---
+```
+
+`name` is kebab-case and matches the filename (`subagents/follow-up.md`
+→ `name: follow-up`). `description` is a single line naming the trigger
+condition — a stage, a score threshold, a schedule — and, per the
+no-naming rule below, never another contract's name. The frontmatter
+sits above the eight headings and does not disturb their order.
+
 Three rules apply on top of the heading shape. Unlike the heading
 presence and order above, `tests/validate-agent.sh` does not check any
-of these three — it only parses the eight headings, never the content
-underneath them — so these are conventions a human or reviewer enforces,
-not ones the script catches:
+of these three, nor the frontmatter above — it only parses the eight
+headings, never the frontmatter and never the content underneath them —
+so these are conventions a human or reviewer enforces, not ones the
+script catches:
 
 - **No contract may name another contract.** Handoffs happen through
   state transitions only — a contract hands off by producing an output

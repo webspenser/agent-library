@@ -43,11 +43,15 @@ agent-library/
 
 ```bash
 cd <agent-name>
-./install.sh            # symlink adapters for detected hosts
-./install.sh --copy     # independent copies, for handoff to a client
+./install.sh            # symlink all three adapters (CLAUDE.md, GEMINI.md,
+                        # AGENTS.md) plus .claude/skills and .claude/agents
+./install.sh --copy     # the same set as independent copies, for handoff
+./install.sh --dry-run  # print what would happen, write nothing
 ```
 
-Then open the folder with any supported host and follow `AGENT.md`.
+It detects nothing and asks nothing: every run writes all three adapter
+files, so the folder is ready for whichever host opens it. Then open the
+folder with any supported host and follow `AGENT.md`.
 
 ## Capability tiers
 
