@@ -115,10 +115,15 @@ and `idle_days`, that make `stage` itself optional when either is
 given — added so a caller can find due-today or stalled leads across
 every stage in one call, rather than looping `query_by_stage` once per
 stage. `query_activities` is the read counterpart to `log_activity`:
-it finds Activities by `status` and an optional `[since, until]`
-window, added because no existing operation could answer "every
-Activity at `status: draft`" without a `lead_id` in hand — exactly what
-`send-digest`'s approval queue needs.
+it finds Activities by `status`, optionally `direction`, and an
+optional `[since, until]` window, added because no existing operation
+could answer "every outbound Activity at `status: draft`" without a
+`lead_id` in hand — exactly what `send-digest`'s approval queue needs.
+The `direction` filter exists because `log_activity` creates every
+Activity at `status: draft` regardless of direction, so an inbound
+reply or a call debrief lands at `draft` exactly like an outbound
+approach message does — `direction: "outbound"` is what keeps the
+approval queue to messages actually awaiting a send decision.
 
 ### Airtable adapter — four tables
 
