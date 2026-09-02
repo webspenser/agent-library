@@ -77,9 +77,16 @@ sub-agent dispatch, with identical behavior.
 
 ### Neutral contract
 
-Ten operations: `create_lead`, `get_lead`, `update_stage`,
-`update_lead`, `log_activity`, `log_research`, `upsert_contact`,
-`query_by_stage`, `query_by_score`, `query_activities`.
+Eleven operations: `create_lead`, `get_lead`, `update_stage`,
+`update_lead`, `log_activity`, `update_activity`, `log_research`,
+`upsert_contact`, `query_by_stage`, `query_by_score`,
+`query_activities`. `update_activity` is the only operation that can
+change an Activity `log_activity` already created — it writes `status`
+and `outcome` by `activity_id`, reuses `log_activity`'s approval gate
+(a transition to `sent` is rejected unless the record was already
+`approved`), and is what lets a pending draft or approved Activity be
+moved to the fourth `status` value, `voided`, when an opt-out arrives —
+see the Follow-up contract below.
 `update_stage` writes only the `stage` field, validated against the
 twelve-value enum, and stamps `stage_changed_at` on every transition —
 the one field only this operation ever writes; `update_lead` writes
@@ -116,7 +123,8 @@ Activity at `status: draft`" without a `lead_id` in hand — exactly what
 - **Research** — type (news / funding / social / event / hire), summary,
   source URL, date, **hook**; linked to Leads
 - **Activities** — channel, direction, date, summary, draft body,
-  status (draft → approved → sent), outcome; linked to Leads and Contacts
+  status (draft → approved → sent, or draft/approved → voided),
+  outcome; linked to Leads and Contacts
 
 Drafts are Activities with `status: draft` rather than a separate
 table. The approval queue is then a single Airtable view, which serves
@@ -211,15 +219,16 @@ invented capabilities, metrics, or references.
 - **Inputs** — last activity, questions asked, promises made
 - **Outputs** — drafted follow-up Activity with `status: draft`, next
   action and due date set on the lead
-- **Tools** — CRM, Gmail draft
+- **Tools** — CRM (including `update_activity`), Gmail draft
 - **Stop** — draft created and next action set
 - **Handoff** — back to the lead's stage, or `Lost` once the touch
   limit is exhausted
 - **Inline fallback** — runs as phase 5 in sequence
 
 Guardrails: never exceed the configured touch count; any reply
-containing an opt-out sets `do-not-contact` permanently and voids
-pending drafts; every question actually asked is answered before
+containing an opt-out sets `do-not-contact` permanently and calls
+`update_activity` to void every pending (`draft` or `approved`) draft
+for the lead; every question actually asked is answered before
 anything new is introduced.
 
 ## Skills
@@ -310,7 +319,7 @@ reputation.
 3. A company with no findable news or socials produces "no hooks found"
    rather than an invented hook
 4. LinkedIn as chosen channel produces copy-paste text and calls no send tool
-5. A reply containing an opt-out sets `do-not-contact` and voids pending drafts
+5. A reply containing an opt-out sets `do-not-contact` and voids pending drafts via `update_activity`
 6. Reaching the configured touch limit marks the lead `Lost` instead of
    drafting again
 7. An offer claim absent from `business-profile.md` is omitted, not inferred
