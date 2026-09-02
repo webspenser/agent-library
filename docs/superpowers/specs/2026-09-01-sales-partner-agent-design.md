@@ -81,11 +81,14 @@ Eleven operations: `create_lead`, `get_lead`, `update_stage`,
 `update_lead`, `log_activity`, `update_activity`, `log_research`,
 `upsert_contact`, `query_by_stage`, `query_by_score`,
 `query_activities`. `update_activity` is the only operation that can
-change an Activity `log_activity` already created — it writes `status`
-and `outcome` by `activity_id`, reuses `log_activity`'s approval gate
-(a transition to `sent` is rejected unless the record was already
-`approved`), and is what lets a pending draft or approved Activity be
-moved to the fourth `status` value, `voided`, when an opt-out arrives —
+change an Activity `log_activity` already created, and it exists for
+exactly one purpose — voiding: it writes `status` and `outcome` by
+`activity_id`, but the only `status` it accepts is `"voided"` —
+`draft`, `approved`, and `sent` are all rejected outright and
+unconditionally, so unlike `log_activity` it has no path to `sent`
+under any circumstance, approved or not. This is what lets a pending
+`draft` or `approved` Activity be moved to the fourth `status` value,
+`voided`, when an opt-out arrives, with no way back toward being sent —
 see the Follow-up contract below.
 `update_stage` writes only the `stage` field, validated against the
 twelve-value enum, and stamps `stage_changed_at` on every transition —
@@ -123,7 +126,8 @@ Activity at `status: draft`" without a `lead_id` in hand — exactly what
 - **Research** — type (news / funding / social / event / hire), summary,
   source URL, date, **hook**; linked to Leads
 - **Activities** — channel, direction, date, summary, draft body,
-  status (draft → approved → sent, or draft/approved → voided),
+  status (draft → approved → sent via `log_activity`, or draft/approved
+  → voided via `update_activity`, a dead end that never reaches sent),
   outcome; linked to Leads and Contacts
 
 Drafts are Activities with `status: draft` rather than a separate
@@ -219,7 +223,8 @@ invented capabilities, metrics, or references.
 - **Inputs** — last activity, questions asked, promises made
 - **Outputs** — drafted follow-up Activity with `status: draft`, next
   action and due date set on the lead
-- **Tools** — CRM (including `update_activity`), Gmail draft
+- **Tools** — CRM (including `update_activity`, restricted to voiding
+  only), Gmail draft
 - **Stop** — draft created and next action set
 - **Handoff** — back to the lead's stage, or `Lost` once the touch
   limit is exhausted
