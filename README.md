@@ -75,9 +75,25 @@ parallelism and context isolation, never correctness.
 
 | Agent | Purpose | Status |
 |---|---|---|
-| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline — prospect, research, approach, sales call, follow-up — over a CRM | Designed, not yet built |
+| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline — prospect, research, approach, sales call, follow-up — over a CRM | Built |
+
+## Verifying
+
+```bash
+tests/run-all.sh
+```
+
+The single command that verifies the whole repo. It runs the validator's
+own test suite (`tests/test-validate-agent.sh`), the installer's test
+suite (`tests/test-install.sh`), and then `tests/validate-agent.sh`
+against every agent directory that has an `AGENT.md` — currently
+`_template/` and `sales-partner/`. It prints `ALL GREEN` and exits `0`
+only when every suite passes and every agent conforms to
+`CONVENTIONS.md`; otherwise it prints `FAILURES ABOVE` and exits
+non-zero. Run it before committing any change anywhere in the repo.
 
 ## Specs
 
 - [Portable Agent Specification Format](docs/superpowers/specs/2026-09-01-portable-agent-spec-design.md) — the framework every agent conforms to
 - [Sales Partner Agent](docs/superpowers/specs/2026-09-01-sales-partner-agent-design.md) — the first agent
+- [Agent Library Bootstrap Implementation Plan](docs/superpowers/plans/2026-09-01-agent-library-bootstrap.md) — the plan that built this repo; see its top note on where the CRM contract's final shape lives

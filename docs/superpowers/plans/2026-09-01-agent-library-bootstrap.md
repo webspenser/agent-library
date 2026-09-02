@@ -2,6 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Note on the CRM contract:** it evolved during execution from six
+> operations to eleven, each addition closing a hole a review found.
+> [`docs/superpowers/specs/2026-09-01-sales-partner-agent-design.md`](../specs/2026-09-01-sales-partner-agent-design.md)
+> and [`sales-partner/context/crm-contract.md`](../../../sales-partner/context/crm-contract.md)
+> are the live authority on the contract's final shape. The per-task text
+> below (Task 6 especially, and the "ten operations" reference near line
+> 790) records what was asked at the time, not the final state — it is
+> left unedited as a historical record rather than rewritten.
+
 **Goal:** Build the portable agent specification format — a validator, a
 `_template/` skeleton, and an `install.sh` — then build the first agent,
 `sales-partner`, from that template.
