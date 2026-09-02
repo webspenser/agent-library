@@ -80,16 +80,22 @@ sub-agent dispatch, with identical behavior.
 Eleven operations: `create_lead`, `get_lead`, `update_stage`,
 `update_lead`, `log_activity`, `update_activity`, `log_research`,
 `upsert_contact`, `query_by_stage`, `query_by_score`,
-`query_activities`. `update_activity` is the only operation that can
-change an Activity `log_activity` already created, and it exists for
-exactly one purpose — voiding: it writes `status` and `outcome` by
-`activity_id`, but the only `status` it accepts is `"voided"` —
-`draft`, `approved`, and `sent` are all rejected outright and
-unconditionally, so unlike `log_activity` it has no path to `sent`
-under any circumstance, approved or not. This is what lets a pending
-`draft` or `approved` Activity be moved to the fourth `status` value,
-`voided`, when an opt-out arrives, with no way back toward being sent —
-see the Follow-up contract below.
+`query_activities`. `log_activity` and `update_activity` are disjoint
+by design — one create-only, one update-only — and between them never
+reach `approved` or `sent`. `log_activity` takes no `activity_id`,
+never touches an existing row, and accepts only `status: "draft"` on
+the row it creates, rejecting `approved`, `sent`, and `voided`
+outright and unconditionally. `update_activity` is the only operation
+that can change an Activity `log_activity` already created, and it
+exists for exactly one purpose — voiding: it writes `status` and
+`outcome` by `activity_id`, but the only `status` it accepts is
+`"voided"` — `draft`, `approved`, and `sent` are all rejected outright
+and unconditionally, regardless of the record's current status. This
+is what lets a pending `draft` Activity be moved to the fourth
+`status` value, `voided`, when an opt-out arrives, with no way back
+toward being sent — see the Follow-up contract below. `approved` and
+`sent` are reachable only by the operator acting directly in Airtable,
+outside every one of these eleven operations.
 `update_stage` writes only the `stage` field, validated against the
 twelve-value enum, and stamps `stage_changed_at` on every transition —
 the one field only this operation ever writes; `update_lead` writes
@@ -99,10 +105,11 @@ rejects any attempt to write `stage` or `stage_changed_at` through it.
 The split is what keeps `update_stage` the sole handoff mechanism
 between sub-agents. `log_activity`, `log_research`, and `upsert_contact`
 are the child-record writes, one per linked table: `log_activity`
-creates an Activity, `log_research` creates a Research row and rejects
-an empty source URL or an empty hook, and `upsert_contact` creates or
-updates a Contact — matched on email, or on name plus title — so a
-second contact-discovery pass after a bounce never duplicates a person.
+creates an Activity at `status: draft` and nothing else, `log_research`
+creates a Research row and rejects an empty source URL or an empty
+hook, and `upsert_contact` creates or updates a Contact — matched on
+email, or on name plus title — so a second contact-discovery pass after
+a bounce never duplicates a person.
 `query_by_stage` takes two optional filters, `next_action_due_before`
 and `idle_days`, that make `stage` itself optional when either is
 given — added so a caller can find due-today or stalled leads across
@@ -126,9 +133,10 @@ Activity at `status: draft`" without a `lead_id` in hand — exactly what
 - **Research** — type (news / funding / social / event / hire), summary,
   source URL, date, **hook**; linked to Leads
 - **Activities** — channel, direction, date, summary, draft body,
-  status (draft → approved → sent via `log_activity`, or draft/approved
-  → voided via `update_activity`, a dead end that never reaches sent),
-  outcome; linked to Leads and Contacts
+  status (created at `draft` only, via `log_activity`; moved only to
+  the dead-end `voided`, via `update_activity`; `approved` and `sent`
+  reachable only by the operator directly in Airtable, never by any of
+  the eleven operations), outcome; linked to Leads and Contacts
 
 Drafts are Activities with `status: draft` rather than a separate
 table. The approval queue is then a single Airtable view, which serves
