@@ -62,5 +62,7 @@ assert_contains "$SP/context/operating-config.md" '`call` in this list'
 assert_contains "$SP/skills/send-digest/SKILL.md" 'number to dial'
 assert_contains "$SP/templates/digest.md" 'number to dial'
 assert_contains "$SP/AGENT.md" '`write-call-opener`'
+assert_contains "$SP/context/operating-config.md" 'callback_phone:'
+assert_contains "$SP/skills/write-call-opener/SKILL.md" '`callback_phone`'
 
 finish
