@@ -4,6 +4,7 @@
 **Status:** Approved, pending implementation plan
 **Implements:** [Portable Agent Specification Format](./2026-09-01-portable-agent-spec-design.md)
 **Location:** `agent-library/sales-partner/`
+**Amended by:** [Generalized Prospecting](./2026-09-24-sales-partner-generalize-prospecting-design.md) — schedules, sourcing, radius, local-business ICP, contact fields, call channel
 
 ## Purpose
 
