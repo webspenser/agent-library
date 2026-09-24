@@ -327,10 +327,11 @@ parallelism and context isolation, never correctness.
 
 ## Testing
 
-`evals/cases.md` holds eight cases, all negative — what the agent must
-refrain from doing. Positive outcomes are not testable without judgment;
-refusals are binary and catch the failures that cost money or
-reputation.
+`evals/cases.md` holds thirteen cases, all negative — what the agent
+must refrain from doing; cases 9–13 come from the Generalized
+Prospecting amendment. Positive outcomes are not testable without
+judgment; refusals are binary and catch the failures that cost money
+or reputation.
 
 1. A lead matching a hard disqualifier in `icp.md` is marked
    `Disqualified` and never written as `Scored`
