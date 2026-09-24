@@ -37,7 +37,7 @@ assert_contains "$SP/skills/interview-business/SKILL.md" 'companies or local bus
 
 echo "-- contact fields and dedupe"
 C="$SP/context/crm-contract.md"; A="$SP/context/crm-airtable-adapter.md"
-assert_contains "$C" '`company, domain, location, industry, size, source, source_url`, plus optional `address, phone, email, score, score_breakdown`'
+assert_contains "$C" '`company, location, industry, size, source, source_url`, plus optional `domain, address, phone, email, score, score_breakdown`'
 assert_contains "$C" 'failing that, the same normalized `phone`'
 assert_contains "$C" 'none of `domain`, `phone`, or `address`'
 assert_contains "$C" '`lead_id, name, title, email, phone, linkedin_url, role, verified, notes`'
@@ -56,7 +56,7 @@ assert_not_contains "$A" '`Domain` | text, unique'
 echo "-- call channel"
 assert_contains "$SP/skills/write-call-opener/SKILL.md" 'name: write-call-opener'
 assert_contains "$SP/skills/write-call-opener/SKILL.md" 'channel="call"'
-assert_contains "$SP/templates/cold-call-opener.md" '[voicemail'
+assert_contains "$SP/templates/cold-call-opener.md" 'Voicemail:'
 assert_contains "$SP/subagents/approacher.md" 'only for a lead with a sourced phone number'
 assert_contains "$SP/context/operating-config.md" '`call` in this list'
 assert_contains "$SP/skills/send-digest/SKILL.md" 'number to dial'
@@ -71,7 +71,66 @@ assert_contains "$E" '## Case 9: A lead with no sourced address never scores ins
 assert_contains "$E" '## Case 10: A business with no website is deduped on phone, then name and address'
 assert_contains "$E" '## Case 11: A lead with no sourced phone never gets a call draft'
 assert_contains "$E" '## Case 12: A source outside `prospecting_sources` is never used'
-assert_contains "$E" 'These twelve refusals'
+assert_contains "$E" 'These thirteen refusals'
+assert_not_contains "$E" 'These twelve refusals'
+assert_contains "$E" '## Case 13: A scheduled activity runs its `then` steps and nothing else'
 assert_contains docs/superpowers/specs/2026-09-01-sales-partner-agent-design.md '2026-09-24-sales-partner-generalize-prospecting-design.md'
+
+echo "-- phone normalization (I1)"
+assert_contains "$C" 'normalized to E.164'
+assert_contains "$C" 'never given a guessed country code'
+assert_contains "$A" 'normalized to E.164'
+assert_contains "$A" 'never given a guessed country code'
+assert_contains "$E" '`+15550104477`'
+
+echo "-- sourced distance (I3)"
+assert_contains "$SP/skills/score-lead/SKILL.md" 'distance not sourced — unverified'
+assert_contains "$SP/context/icp.md" 'distance not sourced — unverified'
+assert_contains "$E" 'distance not sourced — unverified'
+
+echo "-- interview asks what it writes (I4)"
+I="$SP/skills/interview-business/SKILL.md"
+assert_contains "$I" 'which size measure fits'
+assert_contains "$I" 'the service area center and radius'
+assert_contains "$I" 'which events signal a prospect is newly in-market'
+assert_contains "$I" 'Target roles, Buying triggers, Anti-signals'
+
+echo "-- follow-up channel (I5)"
+F="$SP/subagents/follow-up.md"
+assert_contains "$F" 'chosen from `enabled_channels`'
+assert_contains "$F" '`skills/write-call-opener/SKILL.md`'
+assert_contains "$F" 'no enabled channel has a sourced route'
+assert_not_contains "$F" '`Channel = email`,'
+assert_contains "$SP/skills/write-follow-up/SKILL.md" 'the email path'
+
+echo "-- evals widened (I6)"
+assert_contains "$E" '`100×0.10=10`'
+assert_contains "$E" 'same normalized company and address'
+assert_contains "$E" 'may get a `Channel = call` draft'
+assert_contains "$E" 'then: [prepare]'
+
+echo "-- minors (M1-M11, D1-D2)"
+assert_contains "$SP/skills/send-digest/SKILL.md" 'CRM **`get_lead`**'
+assert_not_contains "$SP/context/icp.md" 'headcount/revenue falls'
+assert_contains "$SP/context/icp.md" 'bands in `size_measure`'
+assert_contains "$SP/context/icp.md" 'a sourced direct phone number'
+assert_contains "$SP/skills/find-decision-makers/SKILL.md" 'public business registries'
+assert_contains "$SP/skills/find-decision-makers/SKILL.md" 'an owner is written with `role: decision-maker`'
+assert_contains "$SP/AGENT.md" 'a phone number, an address, a distance'
+assert_contains "$SP/context/operating-config.md" '`write-follow-up`, and `write-call-opener`'
+assert_contains "$SP/subagents/approacher.md" '`callback_phone`'
+assert_contains "$SP/subagents/prospector.md" 'Existing leads, read via CRM'
+assert_contains "$SP/subagents/prospector.md" 'Every source listed in `prospecting_sources` is exhausted'
+assert_contains "$SP/subagents/preparer.md" '`apify_google_maps`'
+assert_contains "$SP/skills/write-call-opener/SKILL.md" 'status="draft"'
+assert_contains "$SP/skills/write-call-opener/SKILL.md" 'never dials'
+assert_contains "$SP/skills/write-call-opener/SKILL.md" 'never an invented number'
+assert_contains "$SP/subagents/approacher.md" 'places, schedules, or records a call'
+assert_contains "$SP/context/operating-config.md" 'then: [prepare]'
+assert_contains docs/superpowers/specs/2026-09-01-sales-partner-agent-design.md 'holds thirteen cases'
+assert_contains "$SP/AGENT.md" 'when the `digest` entry in `schedules` fires'
+assert_not_contains "$SP/AGENT.md" 'on the schedule in'
+assert_not_contains "$SP/skills/send-digest/SKILL.md" 'digest schedule in operating-config.md'
+assert_contains "$SP/context/operating-config.md" 'then `prepare` (research)'
 
 finish
