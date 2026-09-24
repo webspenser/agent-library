@@ -26,4 +26,13 @@ assert_contains "$SP/subagents/prospector.md" 'only the sources listed in `prosp
 assert_contains "$SP/subagents/prospector.md" '`apollo` is listed'
 assert_contains "$SP/skills/interview-business/SKILL.md" '`prospecting_sources`'
 
+echo "-- local ICP and radius"
+assert_contains "$SP/context/icp.md" 'target_type:'
+assert_contains "$SP/context/icp.md" 'size_measure:'
+assert_contains "$SP/context/icp.md" 'service_area:'
+assert_contains "$SP/context/icp.md" 'new opening or new location'
+assert_contains "$SP/skills/score-lead/SKILL.md" '`service_area`'
+assert_contains "$SP/skills/score-lead/SKILL.md" 'no sourced address'
+assert_contains "$SP/skills/interview-business/SKILL.md" 'companies or local businesses'
+
 finish
