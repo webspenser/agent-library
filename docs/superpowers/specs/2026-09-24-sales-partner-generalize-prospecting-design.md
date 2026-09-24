@@ -180,6 +180,10 @@ with no sourced address scores 0 on Geography and is marked
   digest section: `send-digest` renders six fixed sections, and a
   call opener awaiting the operator is exactly an outbound draft
   awaiting approval.
+- The voicemail's callback number comes from a new
+  `operating-config.md` key, `callback_phone`, filled in by the
+  interview when `call` is enabled. When it is unset, the voicemail
+  omits the number rather than inventing one.
 
 ### 7 · Consistency
 

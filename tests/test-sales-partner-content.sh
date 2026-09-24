@@ -65,4 +65,13 @@ assert_contains "$SP/AGENT.md" '`write-call-opener`'
 assert_contains "$SP/context/operating-config.md" 'callback_phone:'
 assert_contains "$SP/skills/write-call-opener/SKILL.md" '`callback_phone`'
 
+echo "-- evals"
+E="$SP/evals/cases.md"
+assert_contains "$E" '## Case 9: A lead with no sourced address never scores inside the service area'
+assert_contains "$E" '## Case 10: A business with no website is deduped on phone, then name and address'
+assert_contains "$E" '## Case 11: A lead with no sourced phone never gets a call draft'
+assert_contains "$E" '## Case 12: A source outside `prospecting_sources` is never used'
+assert_contains "$E" 'These twelve refusals'
+assert_contains docs/superpowers/specs/2026-09-01-sales-partner-agent-design.md '2026-09-24-sales-partner-generalize-prospecting-design.md'
+
 finish
