@@ -44,7 +44,7 @@ assert_contains "$C" '`lead_id, name, title, email, phone, linkedin_url, role, v
 assert_contains "$C" 'listing, web_presence'
 assert_contains "$A" '| `Address` | text |'
 assert_contains "$A" '| `Phone` | phone |'
-assert_contains "$A" '| `Email` | email |'
+assert_pass bash -c "grep -A2 -F '| \`Address\` | text |' '$A' | tr -d '\n' | grep -qF '| \`Address\` | text || \`Phone\` | phone || \`Email\` | email |'"
 assert_contains "$A" 'news, funding, social, event, hire, listing, web_presence'
 assert_contains "$SP/skills/research-company/SKILL.md" 'hire, listing, web_presence'
 assert_contains "$SP/skills/find-decision-makers/SKILL.md" 'email, phone, linkedin_url'
