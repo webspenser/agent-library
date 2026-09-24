@@ -53,4 +53,14 @@ assert_contains "$SP/subagents/prospector.md" '`Address`, `Phone`, `Email`'
 assert_contains "$SP/AGENT.md" 'hire, listing, web presence'
 assert_not_contains "$A" '`Domain` | text, unique'
 
+echo "-- call channel"
+assert_contains "$SP/skills/write-call-opener/SKILL.md" 'name: write-call-opener'
+assert_contains "$SP/skills/write-call-opener/SKILL.md" 'channel="call"'
+assert_contains "$SP/templates/cold-call-opener.md" '[voicemail'
+assert_contains "$SP/subagents/approacher.md" 'only for a lead with a sourced phone number'
+assert_contains "$SP/context/operating-config.md" '`call` in this list'
+assert_contains "$SP/skills/send-digest/SKILL.md" 'number to dial'
+assert_contains "$SP/templates/digest.md" 'number to dial'
+assert_contains "$SP/AGENT.md" '`write-call-opener`'
+
 finish
