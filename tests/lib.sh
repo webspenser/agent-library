@@ -25,6 +25,11 @@ assert_contains() { # assert_contains <file> <string>
   else _report no "$1 missing '$2'"; fi
 }
 
+assert_not_contains() { # assert_not_contains <file> <string>
+  if grep -qF -- "$2" "$1" 2>/dev/null; then _report no "$1 still contains '$2'"
+  else _report ok "$1 free of '$2'"; fi
+}
+
 finish() {
   echo "-- $PASS_COUNT passed, $FAIL_COUNT failed"
   [ "$FAIL_COUNT" -eq 0 ]
