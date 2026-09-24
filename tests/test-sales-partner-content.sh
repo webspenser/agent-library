@@ -35,4 +35,22 @@ assert_contains "$SP/skills/score-lead/SKILL.md" '`service_area`'
 assert_contains "$SP/skills/score-lead/SKILL.md" 'no sourced address'
 assert_contains "$SP/skills/interview-business/SKILL.md" 'companies or local businesses'
 
+echo "-- contact fields and dedupe"
+C="$SP/context/crm-contract.md"; A="$SP/context/crm-airtable-adapter.md"
+assert_contains "$C" '`company, domain, location, industry, size, source, source_url`, plus optional `address, phone, email, score, score_breakdown`'
+assert_contains "$C" 'failing that, the same normalized `phone`'
+assert_contains "$C" 'none of `domain`, `phone`, or `address`'
+assert_contains "$C" '`lead_id, name, title, email, phone, linkedin_url, role, verified, notes`'
+assert_contains "$C" 'listing, web_presence'
+assert_contains "$A" '| `Address` | text |'
+assert_contains "$A" '| `Phone` | phone |'
+assert_contains "$A" '| `Email` | email |'
+assert_contains "$A" 'news, funding, social, event, hire, listing, web_presence'
+assert_contains "$SP/skills/research-company/SKILL.md" 'hire, listing, web_presence'
+assert_contains "$SP/skills/find-decision-makers/SKILL.md" 'email, phone, linkedin_url'
+assert_contains "$SP/subagents/preparer.md" 'email, phone, linkedin_url'
+assert_contains "$SP/subagents/prospector.md" '`Address`, `Phone`, `Email`'
+assert_contains "$SP/AGENT.md" 'hire, listing, web presence'
+assert_not_contains "$A" '`Domain` | text, unique'
+
 finish
