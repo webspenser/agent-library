@@ -59,7 +59,8 @@ schedules:
   `interview` and the sales-call steps are excluded: both need the
   operator present.
 - `when` is a weekday and 24-hour time, or `daily HH:MM`, interpreted
-  in `timezone`.
+  in `timezone`. For the digest, the reporting window's cadence
+  interval is 7 days for a weekday entry and 1 day for a `daily` entry.
 - `then` is an optional ordered list of further activities run in the
   same session after `activity` reaches a stop condition.
 - The shipped defaults are the two entries above: prospecting then
@@ -173,9 +174,12 @@ with no sourced address scores 0 on Geography and is marked
   the outcome remain operator actions; the Follow-up contract reads the
   outcome as it does for any other channel.
 - A call counts as one touch toward `max_touches`.
-- The digest adds a **Ready to call** section: leads at
-  `Approach Drafted` whose drafted Activity has `channel: call`, with
-  phone number and opener link.
+- The digest's **Awaiting approval** section lists a `call` draft
+  like any other draft and adds the number to dial — the draft's
+  Contact `phone` when present, otherwise the lead's `phone`. No new
+  digest section: `send-digest` renders six fixed sections, and a
+  call opener awaiting the operator is exactly an outbound draft
+  awaiting approval.
 
 ### 7 · Consistency
 
