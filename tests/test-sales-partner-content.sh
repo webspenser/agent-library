@@ -19,4 +19,11 @@ while IFS= read -r f; do
   assert_not_contains "$f" 'digest_schedule'
 done < <(find "$SP" -name '*.md')
 
+echo "-- prospecting sources"
+assert_contains "$SP/context/operating-config.md" 'prospecting_sources: [apify_google_maps, apify_site_scraper, web_search]'
+assert_contains "$SP/context/operating-config.md" '**`prospecting_sources`**'
+assert_contains "$SP/subagents/prospector.md" 'only the sources listed in `prospecting_sources`'
+assert_contains "$SP/subagents/prospector.md" '`apollo` is listed'
+assert_contains "$SP/skills/interview-business/SKILL.md" '`prospecting_sources`'
+
 finish
