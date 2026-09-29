@@ -1,0 +1,16 @@
+{
+  "name": "webspenser",
+  "owner": { "name": "Webspenser" },
+  "plugins": [
+    {
+      "name": "agent-builder",
+      "source": { "source": "github", "repo": "webspenser/agent-builder" },
+      "description": "Build your own AI agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator."
+    },
+    {
+      "name": "sales-partner",
+      "source": { "source": "github", "repo": "webspenser/sales-partner" },
+      "description": "Interviews a business, then runs a five-stage lead pipeline — prospect, research, approach, sales call, follow-up — over a CRM"
+    }
+  ]
+}
