@@ -14,7 +14,7 @@ Code plugin marketplace.
 | Plugin | What it does | Repo | Status |
 |---|---|---|---|
 | `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 1.x |
-| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 1.1 — install, run `/sales-partner:setup` in an empty folder, bind your CRM (Attio or Airtable) and Gmail |
+| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 2.0 — install, run `/sales-partner:setup` in an empty folder, bind Attio or Airtable and Gmail; all three unattended-safe |
 
 **Gemini CLI** (unverified): install each repo by URL, e.g.
 `gemini extensions install https://github.com/webspenser/agent-builder`.
@@ -22,7 +22,7 @@ Codex support comes once it is tested.
 
 ## Adding a plugin
 
-1. Agents pass `webspenser/agent-builder/validate@v1`; tools (like
+1. Agents pass `webspenser/agent-builder/validate@v2`; tools (like
    `agent-builder` itself) pass their own tests.
 2. Open a pull request here adding one entry to
    `.claude-plugin/marketplace.json` (`name`, `description`, and
