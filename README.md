@@ -9,7 +9,6 @@ Code plugin marketplace.
     /plugin install agent-builder@webspenser
     /plugin install sales-partner@webspenser
 
-
 ## Plugins
 
 | Plugin | What it does | Repo | Status |
@@ -31,6 +30,9 @@ Codex support comes once it is tested.
    table above.
 3. CI (`tests/check-catalog.py`) confirms the repo publishes a plugin
    with that name.
+4. 1.1 agents set `catalog: webspenser` and
+   `catalog_repo: webspenser/agent-library` in `agent.yaml` so `setup`
+   can enable them in the user's folder.
 
 ## License
 
