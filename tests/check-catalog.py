@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Checks .claude-plugin/marketplace.json. Prints one FAIL line per problem."""
+import http.client
 import json
 import pathlib
 import re
@@ -14,15 +15,20 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 def fetch_plugin_name(repo):
     url = f"https://raw.githubusercontent.com/{repo}/HEAD/.claude-plugin/plugin.json"
-    try:
-        with urllib.request.urlopen(url, timeout=20) as resp:
-            return json.loads(resp.read().decode("utf-8")).get("name"), None
-    except urllib.error.HTTPError as err:
-        return None, f"{repo}: .claude-plugin/plugin.json not found (HTTP {err.code})"
-    except (urllib.error.URLError, TimeoutError) as err:
-        return None, f"{repo}: could not fetch plugin.json ({err})"
-    except (json.JSONDecodeError, UnicodeDecodeError, AttributeError):
-        return None, f"{repo}: .claude-plugin/plugin.json is not a JSON object"
+    last_err = None
+    for attempt in range(2):
+        try:
+            with urllib.request.urlopen(url, timeout=20) as resp:
+                return json.loads(resp.read().decode("utf-8")).get("name"), None
+        except urllib.error.HTTPError as err:
+            if err.code == 404:
+                return None, f"{repo}: not found (HTTP 404)"
+            last_err = f"{repo}: fetch failed (HTTP {err.code})"
+        except (urllib.error.URLError, http.client.HTTPException, OSError, TimeoutError) as err:
+            last_err = f"{repo}: could not fetch plugin.json ({err})"
+        except (json.JSONDecodeError, UnicodeDecodeError, AttributeError):
+            return None, f"{repo}: .claude-plugin/plugin.json is not a JSON object"
+    return None, last_err
 
 
 def main():
@@ -55,7 +61,8 @@ def main():
             fails.append(f"{label}: name must be kebab-case")
         elif name in seen:
             fails.append(f"{label}: duplicate name")
-        seen.add(name)
+        else:
+            seen.add(name)
         if not isinstance(entry.get("description"), str) or not entry["description"].strip():
             fails.append(f"{label}: description is missing")
         source = entry.get("source")

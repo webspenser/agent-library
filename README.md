@@ -7,7 +7,10 @@ Code plugin marketplace.
 
     /plugin marketplace add webspenser/agent-library
     /plugin install agent-builder@webspenser
-    /plugin install sales-partner@webspenser
+
+`sales-partner` is listed too; install it with `/plugin install
+sales-partner@webspenser` once it reaches 1.0.0 — today, use it in
+source mode (see its status below).
 
 ## Plugins
 
@@ -22,7 +25,8 @@ Codex support comes once it is tested.
 
 ## Adding a plugin
 
-1. The plugin's repo passes `webspenser/agent-builder/validate@v1`.
+1. Agents pass `webspenser/agent-builder/validate@v1`; tools (like
+   `agent-builder` itself) pass their own tests.
 2. Open a pull request here adding one entry to
    `.claude-plugin/marketplace.json` (`name`, `description`, and
    `{"source": "github", "repo": "owner/repo"}`) and one row to the
@@ -33,3 +37,6 @@ Codex support comes once it is tested.
 ## License
 
 Apache-2.0.
+
+The weekly check pauses if the repo has no activity for 60 days
+(GitHub's rule); re-enable it from the Actions tab.
