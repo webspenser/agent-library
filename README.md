@@ -7,17 +7,15 @@ Code plugin marketplace.
 
     /plugin marketplace add webspenser/agent-library
     /plugin install agent-builder@webspenser
+    /plugin install sales-partner@webspenser
 
-`sales-partner` is listed too; install it with `/plugin install
-sales-partner@webspenser` once it reaches 1.0.0 — today, use it in
-source mode (see its status below).
 
 ## Plugins
 
 | Plugin | What it does | Repo | Status |
 |---|---|---|---|
 | `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 1.x |
-| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 0.9 — use it in source mode today ("Use this template"); plugin installs become useful at 1.0.0 |
+| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 1.0 — install, then run `/sales-partner:setup` in an empty folder |
 
 **Gemini CLI** (unverified): install each repo by URL, e.g.
 `gemini extensions install https://github.com/webspenser/agent-builder`.
