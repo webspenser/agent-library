@@ -22,7 +22,7 @@ Codex support comes once it is tested.
 
 ## Adding a plugin
 
-1. Agents pass `webspenser/agent-builder/validate@v1`; tools (like
+1. Agents pass `webspenser/agent-builder/validate@v2`; tools (like
    `agent-builder` itself) pass their own tests.
 2. Open a pull request here adding one entry to
    `.claude-plugin/marketplace.json` (`name`, `description`, and
