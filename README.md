@@ -13,8 +13,8 @@ Code plugin marketplace.
 
 | Plugin | What it does | Repo | Status |
 |---|---|---|---|
-| `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 1.x |
-| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 2.0 — install, run `/sales-partner:setup` in an empty folder, bind Attio or Airtable and Gmail; all three unattended-safe |
+| `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 2.1 — builds Agent Standard 2.1 agents |
+| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 2.1 — install, run `/sales-partner:setup` in an empty folder, bind Attio or Airtable and Gmail (all unattended-safe); scheduled runs via `/sales-partner:schedule` |
 
 **Gemini CLI** (unverified): install each repo by URL, e.g.
 `gemini extensions install https://github.com/webspenser/agent-builder`.
@@ -30,9 +30,10 @@ Codex support comes once it is tested.
    table above.
 3. CI (`tests/check-catalog.py`) confirms the repo publishes a plugin
    with that name.
-4. 1.1 agents set `catalog: webspenser` and
+4. Agents set `catalog: webspenser` and
    `catalog_repo: webspenser/agent-library` in `agent.yaml` so `setup`
-   can enable them in the user's folder.
+   can enable them in the user's folder. Agents that declare scheduled
+   activities must set both.
 
 ## License
 
