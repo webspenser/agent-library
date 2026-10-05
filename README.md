@@ -1,3 +1,5 @@
+![Webspenser Agent Library — the Claude Code plugin marketplace for every agent built to the Agent Standard](assets/banner.png)
+
 # Webspenser Agent Library
 
 The catalog of AI agents and tools Webspenser publishes, as a Claude
