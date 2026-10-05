@@ -2,8 +2,25 @@
 
 # Webspenser Agent Library
 
-The catalog of AI agents and tools Webspenser publishes, as a Claude
-Code plugin marketplace.
+**Ready-made AI agents for small businesses, each one safe to leave
+running.**
+
+Every agent here does one repeating job in your business, works inside
+the tools you already use, and follows written rules it can't break,
+checked on every action. Nothing goes out without your approval, and
+your data stays in your own systems.
+
+- **[Sales Partner](https://github.com/webspenser/sales-partner)** —
+  fresh, researched leads every week, each with its first touch ready
+  for you to approve. It never sends.
+- **[Agent Builder](https://github.com/webspenser/agent-builder)** —
+  build your own agent to the same standard.
+
+Prefer not to set it up yourself? [Webspenser](https://www.webspenser.com/lp/agent-builder)
+offers done-for-you setup and ongoing managed services.
+
+This catalog is a Claude Code plugin marketplace (a paid Claude plan is
+required).
 
 ## Install
 
