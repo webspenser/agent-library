@@ -13,8 +13,8 @@ Code plugin marketplace.
 
 | Plugin | What it does | Repo | Status |
 |---|---|---|---|
-| `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 5.0 — builds Agent Standard 5.0 agents |
-| `sales-partner` | Interviews a business, then runs a five-stage lead pipeline over a CRM | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 5.0 — install, run `/sales-partner:setup` in an empty folder, bind Attio, Airtable or HubSpot and Gmail (all unattended-safe), or add your own CRM or mailbox with `/sales-partner:add-tool`; scheduled runs via `/sales-partner:schedule` |
+| `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 6.0 — builds Agent Standard 6.0 agents, including tools wrapped in n8n and rules accepted as instruction-only |
+| `sales-partner` | Lead generation and personalization: interviews a business, then finds, scores and researches fresh leads and prepares each first touch — a recommended channel with a full draft, plus personalized statements for email, LinkedIn and calls. It never sends; approved leads go to your own CRM automations | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 6.0 — install, run `/sales-partner:setup` in an empty folder, bind Attio, Airtable or HubSpot and Gmail (all unattended-safe), or add your own CRM or mailbox with `/sales-partner:add-tool`; scheduled runs via `/sales-partner:schedule` |
 
 **Gemini CLI** (unverified): install each repo by URL, e.g.
 `gemini extensions install https://github.com/webspenser/agent-builder`.
