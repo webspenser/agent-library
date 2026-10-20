@@ -11,8 +11,9 @@ checked on every action. Nothing goes out without your approval, and
 your data stays in your own systems.
 
 - **[Sales Partner](https://github.com/webspenser/sales-partner)** —
-  fresh, researched leads every week, each with its first touch ready
-  for you to approve. It never sends.
+  fresh, researched leads every week, each matched to the offer most
+  likely to land, with sourced talking points for your own outreach.
+  It never sends.
 - **[Agent Builder](https://github.com/webspenser/agent-builder)** —
   build your own agent to the same standard.
 
@@ -32,8 +33,8 @@ required).
 
 | Plugin | What it does | Repo | Status |
 |---|---|---|---|
-| `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 6.0 — builds Agent Standard 6.0 agents, including tools wrapped in n8n and rules accepted as instruction-only |
-| `sales-partner` | Lead generation and personalization: interviews a business, then finds, scores and researches fresh leads and prepares each first touch — a recommended channel with a full draft, plus personalized statements for email, LinkedIn and calls. It never sends; approved leads go to your own CRM automations | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 6.0 — install, run `/sales-partner:setup` in an empty folder, bind Attio, Airtable or HubSpot and Gmail (all unattended-safe), or add your own CRM or mailbox with `/sales-partner:add-tool`; scheduled runs via `/sales-partner:schedule` |
+| `agent-builder` | Build your own agent on the Webspenser Agent Standard — a guided wizard, a template, and a validator | [webspenser/agent-builder](https://github.com/webspenser/agent-builder) | 7.3 — builds Agent Standard 7.3 agents. Guard policies support allowlists, size limits, values pinned from pushed bindings, fixed values and URL rules. Agents also get owner-only notifications and an activity ledger |
+| `sales-partner` | Lead generation and offer matching: interviews a business, builds its offer catalog, then finds, scores and researches fresh leads. Research uses Google Maps, reviews, ads, job listings, the website and web search. Each lead is matched to the offer most likely to land, with a reason, an evidence rating and sourced talking points. It never sends; you approve each lead, and your own sequences do the outreach | [webspenser/sales-partner](https://github.com/webspenser/sales-partner) | 8.1 — install and run `/sales-partner:setup` in an empty folder. Bind Attio or HubSpot (CRM), Resend (owner notifications), Airtable (activity ledger) and Apify (scraping, capped per lead and per week), or add your own tool with `/sales-partner:add-tool`. Scheduled runs use `/sales-partner:schedule` |
 
 **Gemini CLI** (unverified): install each repo by URL, e.g.
 `gemini extensions install https://github.com/webspenser/agent-builder`.
